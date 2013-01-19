@@ -1,6 +1,7 @@
 /*
 ** Copyright 2008, The Android Open-Source Project
 ** Copyright (c) 2010-2012, Code Aurora Forum. All rights reserved.
+** Copyright (C) 2013 The OpenSEMC Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -1043,6 +1044,9 @@ AudioStreamOut* AudioHardware::openOutputStream(
     { // scope for the lock
         status_t lStatus;
         Mutex::Autolock lock(mLock);
+
+	audio_output_flags_t flags = static_cast<audio_output_flags_t> (*status);
+
 #ifdef QCOM_VOIP_ENABLED
         // only one output stream allowed
         if (mOutput && !((flags & AUDIO_OUTPUT_FLAG_DIRECT) && (flags & AUDIO_OUTPUT_FLAG_VOIP_RX))
@@ -1090,6 +1094,7 @@ AudioStreamOut* AudioHardware::openOutputStream(
 #endif
             // create new output LPA stream
             AudioSessionOutLPA* out = NULL;
+
 #ifdef QCOM_TUNNEL_LPA_ENABLED
             out = new AudioSessionOutLPA(this, devices, *format, *channels,*sampleRate,0,&err);
             if(err != NO_ERROR) {
@@ -2337,7 +2342,7 @@ void AudioHardware::aic3254_powerdown() {
 }
 #endif
 
-status_t AudioHardware::doRouting(AudioStreamInMSM8x60 *input)
+status_t AudioHardware::doRouting(AudioStreamInMSM8x60 *input, int outputDevice)
 {
     Mutex::Autolock lock(mLock);
     uint32_t outputDevices = mOutput->devices();
@@ -2345,7 +2350,10 @@ status_t AudioHardware::doRouting(AudioStreamInMSM8x60 *input)
     int audProcess = (ADRC_DISABLE | EQ_DISABLE | RX_IIR_DISABLE);
     int sndDevice = -1;
 
-
+    if (outputDevice)
+        outputDevices = outputDevice;
+    else
+        outputDevices = mOutput->devices();
 
     if (input != NULL) {
         uint32_t inputDevice = input->devices();

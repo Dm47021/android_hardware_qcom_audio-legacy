@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2011 The Android Open Source Project
  * Copyright (c) 2011-2012, Code Aurora Forum. All rights reserved.
+ * Copyright (C) 2013 The OpenSEMC Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -496,6 +497,8 @@ static int adev_open_output_stream(struct audio_hw_device *dev,
     out = (struct qcom_stream_out *)calloc(1, sizeof(*out));
     if (!out)
         return -ENOMEM;
+
+    status = static_cast<audio_output_flags_t> (flags);
 
     out->qcom_out = qadev->hwif->openOutputStream(devices,
                                                     flags,

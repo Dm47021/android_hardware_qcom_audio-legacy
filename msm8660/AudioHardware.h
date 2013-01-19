@@ -1,6 +1,7 @@
 /*
 ** Copyright 2008, The Android Open-Source Project
 ** Copyright (c) 2010-2012, Code Aurora Forum. All rights reserved.
+** Copyright (C) 2013 The OpenSEMC Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -198,7 +199,7 @@ private:
     status_t    get_mRecordState();
     status_t    get_snd_dev();
 #endif
-    status_t    doRouting(AudioStreamInMSM8x60 *input);
+    status_t    doRouting(AudioStreamInMSM8x60 *input, int outputDevice = 0);
 #ifdef HTC_ACOUSTIC_AUDIO
     void        getACDB(uint32_t device);
     status_t    do_aic3254_control(uint32_t device);
